@@ -30,6 +30,7 @@ public class ClientMain {
         
         socketHandler = new SocketHandler(inetAddress, Consts.PORT);
         streamHandler = new StreamHandler(socketHandler.getSocket());
+        streamHandler.init();
         chatMessage = new ChatMessage("Ryther");
         chatMessage.setMessage("Messaggio di prova");
         chatMessage.setDate();
