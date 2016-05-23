@@ -35,5 +35,10 @@ public class ClientMain {
         chatMessage.setMessage("Messaggio di prova");
         chatMessage.setDate();
         streamHandler.pushToStream(chatMessage);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
