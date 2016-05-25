@@ -1,13 +1,13 @@
 package model;
 
-import net.Talker;
-import data.Consts;
-import data.ChatMessage;
+import chatUtils.net.Talker;
+import chatUtils.data.Consts;
+import chatUtils.data.ChatMessage;
 import java.net.InetAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import net.SocketHandler;
-import net.StreamHandler;
+import utils.net.SocketHandler;
+import utils.net.StreamHandler;
 
 /**
  *
