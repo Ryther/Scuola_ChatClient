@@ -1,3 +1,8 @@
+package model;
+
+import net.Talker;
+import data.Consts;
+import data.ChatMessage;
 import java.net.InetAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
