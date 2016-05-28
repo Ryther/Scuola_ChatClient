@@ -25,20 +25,20 @@ public class ClientMain {
     public static void main(String[] args) {
         
         InetAddress inetAddress = null;
-//        try {
-            inetAddress = InetAddress.getLoopbackAddress();
-//        } catch (UnknownHostException ex) {
-//            Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-        
+        inetAddress = InetAddress.getLoopbackAddress();
+
+        System.out.print("Inserire nickname: ");
         String userName = new Scanner(System.in).nextLine();
         socketHandler = new SocketHandler(inetAddress, Consts.PORT);
         streamHandler = new StreamHandler(socketHandler.getSocket());
         streamHandler.init();
         UserData userData = new UserData(userName);
-        userData.addChat(new Chat("Prova"));
+        System.out.print("Inserire chat a cui connettersi: ");
+        String chatName = new Scanner(System.in).nextLine();
+        userData.addChat(new Chat(chatName));
         streamHandler.pushToStream(userData);
         chatMessage = new ChatMessage(userName);
+        chatMessage.setChatName(chatName);
         ExecutorService threadPool = Executors.newFixedThreadPool(Consts.TALKER_THREADS);
         Runnable writingThread = new Talker(streamHandler, chatMessage);
         Runnable readingThread = new Talker(streamHandler);
