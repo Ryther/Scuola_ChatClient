@@ -4,10 +4,11 @@ import chatUtils.data.Chat;
 import chatUtils.data.Consts;
 import chatUtils.data.ChatMessage;
 import chatUtils.data.UserData;
+import chatUtils.net.Talker;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 import utils.net.SocketChannelHandler;
-import utils.net.SocketHandler;
-import utils.net.StreamHandler;
 
 /**
  *
@@ -15,34 +16,12 @@ import utils.net.StreamHandler;
  */
 public class ClientMain {
 
-    private static SocketHandler socketHandler;
-    private static StreamHandler streamHandler;
     private static ChatMessage chatMessage;
-    
     private static SocketChannelHandler socketChannelHandler;
-    
-//    public static void main(String[] args) {
-//        
-//        System.out.print("Inserire nickname: ");
-//        String userName = new Scanner(System.in).nextLine();
-//        socketHandler = new SocketHandler(Consts.INETADDRESS, Consts.PORT);
-//        streamHandler = new StreamHandler(socketHandler.getSocket());
-//        streamHandler.init();
-//        UserData userData = new UserData(userName);
-//        System.out.print("Inserire chat a cui connettersi: ");
-//        String chatName = new Scanner(System.in).nextLine();
-//        userData.addChat(new Chat(chatName));
-//        streamHandler.pushToStream(userData);
-//        chatMessage = new ChatMessage(userName);
-//        chatMessage.setChatName(chatName);
-//        ExecutorService threadPool = Executors.newFixedThreadPool(Consts.TALKER_THREADS);
-//        Runnable writingThread = new Talker(streamHandler, chatMessage);
-//        Runnable readingThread = new Talker(streamHandler);
-//        threadPool.submit(writingThread);
-//        threadPool.submit(readingThread);
-//    }
+    private static Map<Talker.TalkerType, Object> dataMap;
     
     public static void main(String[] args) {
+        dataMap = new ConcurrentHashMap();
         System.out.print("Inserire nickname: ");
         String userName = new Scanner(System.in).nextLine();
         
@@ -53,8 +32,10 @@ public class ClientMain {
         userData.addChat(new Chat(chatName));
         
         socketChannelHandler = new SocketChannelHandler(Consts.INETADDRESS, Consts.PORT);
+        socketChannelHandler.pushToChannel(userData);
 
         chatMessage = new ChatMessage(userName);
+        chatMessage.setChatName(chatName);
 
         while (true) {
 
