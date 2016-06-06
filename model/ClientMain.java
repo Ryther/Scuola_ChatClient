@@ -5,9 +5,15 @@ import chatUtils.data.Consts;
 import chatUtils.data.ChatMessage;
 import chatUtils.data.UserData;
 import chatUtils.net.Talker;
+import chatUtils.net.Talker.TalkerType;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import utils.net.SocketChannelHandler;
 
 /**
@@ -37,13 +43,18 @@ public class ClientMain {
         chatMessage = new ChatMessage(userName);
         chatMessage.setChatName(chatName);
 
-        while (true) {
-
-            chatMessage.setMessage(new Scanner(System.in).nextLine());
-            chatMessage.setDateTime();
-            socketChannelHandler.pushToChannel(chatMessage);
-        }
+        socketChannelHandler.pushToChannel(userData);
+        ExecutorService threadPool = Executors.newFixedThreadPool(Consts.TALKER_THREADS);
+        Talker reader = new Talker(userData, dataMap, socketChannelHandler, TalkerType.READER);
+        Talker writer = new Talker(userData, dataMap, socketChannelHandler, TalkerType.WRITER);
+        threadPool.execute(writer);
+        threadPool.execute(reader);
         
-//        socketChannelHandler.close();
+        try {
+            threadPool.awaitTermination(1, TimeUnit.DAYS);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ClientMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        socketChannelHandler.close();
     }
 }
