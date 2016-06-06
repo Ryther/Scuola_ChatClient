@@ -8,13 +8,13 @@ import chatUtils.net.Talker;
 import chatUtils.net.Talker.TalkerType;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import chatUtils.data.ObjectObserved;
 import utils.net.SocketChannelHandler;
 
 /**
@@ -29,11 +29,11 @@ public class ClientMain implements Runnable {
     private static InetAddress inetAddress;
     private static int port;
     private static SocketChannelHandler socketChannelHandler;
-    private static Map<Talker.TalkerType, Object> dataMap;
+    private static ObjectObserved objectObserved;
     
-    public ClientMain(String userName, String chatName, String address, int port) {
+    public ClientMain(String userName, String chatName, String address, int port, ObjectObserved objectObserved) {
         
-        this.dataMap = new ConcurrentHashMap();
+        this.objectObserved = objectObserved;
         this.userData = new UserData(userName);
         this.chatName = chatName;
         this.userData.addChat(new Chat(this.chatName));

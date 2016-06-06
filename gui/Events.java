@@ -16,10 +16,10 @@ public class Events {
         Runnable client = new ClientMain(nickname, chatName, address, port);
         Thread clientThread = new Thread(client);
         clientThread.start();
-        try {
-            clientThread.join();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(CustomMouseListener.class.getName()).log(Level.SEVERE, "Processo client interrotto inaspettatamente", ex);
-        }
+//        try {
+//            clientThread.join();
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(CustomMouseListener.class.getName()).log(Level.SEVERE, "Processo client interrotto inaspettatamente", ex);
+//        }
     }
 }

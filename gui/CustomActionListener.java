@@ -55,6 +55,7 @@ public class CustomActionListener implements ActionListener {
                     int port = Integer.valueOf(splashFrame.getPortTextField().getText());
 
                     Events.connect(nickname, chatName, address, port);
+                    CustomActionListener.frame.dispose();
                     break;
                 case "EXIT_SPLASH_BUTTON":
                     CustomActionListener.frame.dispose();
