@@ -1,8 +1,9 @@
 package gui;
 
+import chatUtils.data.ObjectObserved;
+import chatUtils.data.ObjectObserver;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -14,8 +15,20 @@ import javax.swing.JOptionPane;
 public class CustomActionListener implements ActionListener {
     
     private static JFrame frame;
+    
+    private ObjectObserved objectObserved;
+    private ObjectObserver objectObserver;
 
+    public CustomActionListener() {
+        
+    }
+    
     public CustomActionListener(JFrame frame) {
+        
+        CustomActionListener.frame = frame;
+    }
+
+    public void setFrame(JFrame frame) {
         
         CustomActionListener.frame = frame;
     }
@@ -54,8 +67,9 @@ public class CustomActionListener implements ActionListener {
                     }
                     int port = Integer.valueOf(splashFrame.getPortTextField().getText());
 
-                    Events.connect(nickname, chatName, address, port);
                     CustomActionListener.frame.dispose();
+                    Events.connect(nickname, chatName, address, port, this.objectObserved, this.objectObserver);
+                    MainFrame mainFrame = new MainFrame(nickname, chatName);
                     break;
                 case "EXIT_SPLASH_BUTTON":
                     CustomActionListener.frame.dispose();

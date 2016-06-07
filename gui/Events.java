@@ -1,7 +1,7 @@
 package gui;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import chatUtils.data.ObjectObserved;
+import chatUtils.data.ObjectObserver;
 import model.ClientMain;
 
 /**
@@ -10,11 +10,14 @@ import model.ClientMain;
  */
 public class Events {
     
-    public static void connect(String nickname, String chatName, String address, int port) {
+    private static Thread clientThread;
+            
+    public static void connect(String nickname, String chatName, String address, int port, ObjectObserved objectObserved, ObjectObserver objectObserver) {
         
-        System.out.println("Bottone connect cliccato!");
-        Runnable client = new ClientMain(nickname, chatName, address, port);
-        Thread clientThread = new Thread(client);
+        ClientMain client = new ClientMain(nickname, chatName, address, port);
+        client.setObjectObserved(objectObserved);
+        client.setObjectObserver(objectObserver);
+        Events.clientThread = new Thread(client);
         clientThread.start();
 //        try {
 //            clientThread.join();

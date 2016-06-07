@@ -18,6 +18,8 @@ import javax.swing.JTextField;
 public class SplashFrame extends JFrame {
 
     private static final String TITLE = "SpChat";
+    
+    private CustomActionListener actionListener;
         
 //Pannello Nord
     private static JPanel nordPanel = new JPanel();
@@ -39,6 +41,11 @@ public class SplashFrame extends JFrame {
 
     public SplashFrame() {
 
+        this(new CustomActionListener());
+    }
+    
+    public SplashFrame(CustomActionListener actionListener) {
+        
         super(TITLE);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
@@ -72,13 +79,14 @@ public class SplashFrame extends JFrame {
         
         
     //Imposto i listener
-        CustomActionListener mouseListener = new CustomActionListener(this);
+        this.actionListener = actionListener;
+        this.actionListener.setFrame(this);
         this.southConnectButton.setName("CONNECT_SPLASH_BUTTON");
-        this.southConnectButton.addActionListener(mouseListener);
+        this.southConnectButton.addActionListener(actionListener);
         
         this.southExitButton.setName("EXIT_SPLASH_BUTTON");
-        this.southExitButton.addActionListener(mouseListener);
-        //Imposto il bottone connect come bottone di default alla pressione di enter
+        this.southExitButton.addActionListener(actionListener);
+    //Imposto il bottone connect come bottone di default alla pressione di enter
         this.getRootPane().setDefaultButton(southConnectButton);
         
     //Preparo l'interfaccia per essere mostrata

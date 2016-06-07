@@ -2,19 +2,17 @@ package model;
 
 import chatUtils.data.Chat;
 import chatUtils.data.Consts;
-import chatUtils.data.ChatMessage;
 import chatUtils.data.UserData;
 import chatUtils.net.Talker;
-import chatUtils.net.Talker.TalkerType;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import chatUtils.data.ObjectObserved;
+import chatUtils.data.ObjectObserver;
 import utils.net.SocketChannelHandler;
 
 /**
@@ -24,16 +22,15 @@ import utils.net.SocketChannelHandler;
 public class ClientMain implements Runnable {
 
     private static UserData userData;
-    private static ChatMessage chatMessage;
     private static String chatName;
     private static InetAddress inetAddress;
     private static int port;
     private static SocketChannelHandler socketChannelHandler;
-    private static ObjectObserved objectObserved;
+    private ObjectObserved objectObserved;
+    private ObjectObserver objectObserver;
     
-    public ClientMain(String userName, String chatName, String address, int port, ObjectObserved objectObserved) {
+    public ClientMain(String userName, String chatName, String address, int port) {
         
-        this.objectObserved = objectObserved;
         this.userData = new UserData(userName);
         this.chatName = chatName;
         this.userData.addChat(new Chat(this.chatName));
@@ -47,17 +44,24 @@ public class ClientMain implements Runnable {
         }
     }
 
+    public void setObjectObserved(ObjectObserved objectObserved) {
+        
+        this.objectObserved = objectObserved;
+    }
+
+    public void setObjectObserver(ObjectObserver objectObserver) {
+        
+        this.objectObserver = objectObserver;
+    }
+    
     @Override
     public void run() {
         socketChannelHandler = new SocketChannelHandler(inetAddress, port);
         socketChannelHandler.pushToChannel(userData);
-
-        chatMessage = new ChatMessage(userData.getUserName());
-        chatMessage.setChatName(this.chatName);
         
         ExecutorService threadPool = Executors.newFixedThreadPool(Consts.TALKER_THREADS);
-        Talker reader = new Talker(userData, dataMap, socketChannelHandler, TalkerType.READER);
-        Talker writer = new Talker(userData, dataMap, socketChannelHandler, TalkerType.WRITER);
+        Talker writer = new Talker(socketChannelHandler, this.objectObserver);
+        Talker reader = new Talker(socketChannelHandler, this.objectObserved);
         threadPool.execute(writer);
         threadPool.execute(reader);
         
