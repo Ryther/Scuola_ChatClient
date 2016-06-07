@@ -81,11 +81,11 @@ public class SplashFrame extends JFrame {
     //Imposto i listener
         this.actionListener = actionListener;
         this.actionListener.setFrame(this);
-        this.southConnectButton.setName("CONNECT_SPLASH_BUTTON");
-        this.southConnectButton.addActionListener(actionListener);
+        SplashFrame.southConnectButton.setName("CONNECT_SPLASH_BUTTON");
+        SplashFrame.southConnectButton.addActionListener(actionListener);
         
-        this.southExitButton.setName("EXIT_SPLASH_BUTTON");
-        this.southExitButton.addActionListener(actionListener);
+        SplashFrame.southExitButton.setName("EXIT_SPLASH_BUTTON");
+        SplashFrame.southExitButton.addActionListener(actionListener);
     //Imposto il bottone connect come bottone di default alla pressione di enter
         this.getRootPane().setDefaultButton(southConnectButton);
         

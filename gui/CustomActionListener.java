@@ -1,12 +1,13 @@
 package gui;
 
-import chatUtils.data.ObjectObserved;
-import chatUtils.data.ObjectObserver;
+import chatUtils.data.ChatMessage;
+import data.Reader;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import model.ConnectionManager;
 
 /**
  *
@@ -14,10 +15,10 @@ import javax.swing.JOptionPane;
  */
 public class CustomActionListener implements ActionListener {
     
-    private static JFrame frame;
+    private JFrame frame;
+    private ConnectionManager connectionManager;
     
-    private ObjectObserved objectObserved;
-    private ObjectObserver objectObserver;
+    private Reader objectObserved;
 
     public CustomActionListener() {
         
@@ -25,12 +26,12 @@ public class CustomActionListener implements ActionListener {
     
     public CustomActionListener(JFrame frame) {
         
-        CustomActionListener.frame = frame;
+        this.frame = frame;
     }
 
     public void setFrame(JFrame frame) {
         
-        CustomActionListener.frame = frame;
+        this.frame = frame;
     }
 
     @Override
@@ -40,40 +41,54 @@ public class CustomActionListener implements ActionListener {
             JButton button = (JButton) e.getSource();
             switch(button.getName()) {
                 case "CONNECT_SPLASH_BUTTON":
-                    SplashFrame splashFrame = (SplashFrame) CustomActionListener.frame;
-                    String nickname = splashFrame.getNicknameTextField().getText();
+                    SplashFrame sFrame = (SplashFrame) this.frame;
+                    String nickname = sFrame.getNicknameTextField().getText();
                 //Verifico che il campo nickname non sia vuoto
                     if (nickname.equals("")) {
                         JOptionPane.showMessageDialog(null,"Inserire un nickname!");
                         return;
                     }
 
-                    String chatName = splashFrame.getChatNameTextField().getText();
+                    String chatName = sFrame.getChatNameTextField().getText();
                 //Verifico che il campo chat non sia vuoto
                     if (chatName.equals("")) {
                         JOptionPane.showMessageDialog(null,"Inserire una chat!");
                         return;
                     }
-                    String address = splashFrame.getAddressTextField().getText();
+                    String address = sFrame.getAddressTextField().getText();
                 //Verifico che il campo address non sia vuoto
                     if (address.equals("")) {
                         JOptionPane.showMessageDialog(null,"Inserire l'indirizzo del server!");
                         return;
                     }
                 //Verifico che il campo address non sia vuoto
-                    if (splashFrame.getPortTextField().getText().equals("")) {
+                    if (sFrame.getPortTextField().getText().equals("")) {
                         JOptionPane.showMessageDialog(null,"Inserire la porta del server!");
                         return;
                     }
-                    int port = Integer.valueOf(splashFrame.getPortTextField().getText());
+                    int port = Integer.valueOf(sFrame.getPortTextField().getText());
 
-                    CustomActionListener.frame.dispose();
-                    Events.connect(nickname, chatName, address, port, this.objectObserved, this.objectObserver);
-                    MainFrame mainFrame = new MainFrame(nickname, chatName);
+                    this.frame.dispose();
+                    connectionManager = new ConnectionManager(nickname, chatName, address, port);
+                    MainFrame mainFrame = new MainFrame(nickname, chatName, this);
+                    Reader reader = new Reader(mainFrame, this.connectionManager);
+                    Thread readerThread = new Thread(reader);
+                    readerThread.start();
                     break;
                 case "EXIT_SPLASH_BUTTON":
-                    CustomActionListener.frame.dispose();
+                    this.frame.dispose();
                     break;
+                case "SEND_MAIN_BUTTON":
+                    MainFrame mFrame = (MainFrame) this.frame;
+                    String message = mFrame.getLeftSouthMessageTextField().getText();
+                    if (!message.equals("")) {
+                        
+                        ChatMessage chatMessage = new ChatMessage(mFrame.getNickname());
+                        chatMessage.setChatName(mFrame.getChatName());
+                        chatMessage.setMessage(message);
+                        chatMessage.setDateTime();
+                        connectionManager.push(chatMessage);
+                    }
             }
         }
     }

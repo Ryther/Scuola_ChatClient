@@ -11,7 +11,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
 
 /**
  *
@@ -106,23 +105,37 @@ public class MainFrame extends JFrame {
         this.actionListener = actionListener;
         this.actionListener.setFrame(this);
         
+        MainFrame.leftSouthSendButton.setName("SEND_MAIN_BUTTON");
+        MainFrame.leftSouthSendButton.addActionListener(actionListener);
+        
+    //Imposto il pulsante invia come default
+        this.getRootPane().setDefaultButton(MainFrame.leftSouthSendButton);
+        
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
 
-    public static JTextField getLeftSouthMessageTextField() {
+    public JTextField getLeftSouthMessageTextField() {
         
         return leftSouthMessageTextField;
     }
 
-    public static JTextArea getLeftCenterLogTextField() {
+    public JTextArea getLeftCenterLogTextField() {
         
         return leftCenterLogTextField;
     }
 
-    public static JTextArea getRightCenterUsersTextField() {
+    public JTextArea getRightCenterUsersTextField() {
         
         return rightCenterUsersTextField;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getChatName() {
+        return chatName;
     }
 }
